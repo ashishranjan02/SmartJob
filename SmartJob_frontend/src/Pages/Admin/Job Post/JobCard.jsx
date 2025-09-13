@@ -7,7 +7,7 @@ import {
 import { Edit, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPost, deletePost } from "../../../features/Admin/Job/jobSlice.js";
+import { getAllPost, deletePost } from "../../../features/Job/jobSlice.js";
 
 const JobCard = () => {
   const navigate = useNavigate();

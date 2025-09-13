@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost } from "../../../../features/Admin/Job/jobSlice.js";
+import { createPost } from "../../../../features/Job/jobSlice.js";
 
 const validationSchema = Yup.object({
   companyName: Yup.string().required("Company Name is required"),

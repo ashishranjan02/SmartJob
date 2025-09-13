@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {getAllRecruiterCount, 
         getActiveRecruiterCount, 
         getDectiveRecruiterCount, 
-        getBlockedRecruiterCount,} from '../../../features/Admin/recruiter/recruiterSlice.js';
+        getBlockedRecruiterCount,} from '../../../features/recruiter/recruiterSlice.js';
 
 const StatusCard = () => {
 

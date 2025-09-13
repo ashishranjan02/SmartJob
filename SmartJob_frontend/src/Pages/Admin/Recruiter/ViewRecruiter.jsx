@@ -13,7 +13,7 @@ import {
 import { ArrowBack, Business } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {getRecruiterById} from "../../../features/Admin/recruiter/recruiterSlice.js";
+import {getRecruiterById} from "../../../features/recruiter/recruiterSlice.js";
 
 const ViewRecruiter = () => {
   const { recruiterId } = useParams();

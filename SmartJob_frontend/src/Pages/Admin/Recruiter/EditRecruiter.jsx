@@ -1,6 +1,6 @@
 import React from 'react'
 import {Box} from '@mui/material';
-import { updateRecruiter, getRecruiterById } from '../../../features/Admin/recruiter/recruiterSlice';
+// import { updateRecruiter, getRecruiterById } from '../../../features/recruiter/recruiterSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 

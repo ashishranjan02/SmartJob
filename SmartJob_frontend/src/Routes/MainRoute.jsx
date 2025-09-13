@@ -5,8 +5,8 @@ import AdminDashboard from "../Pages/Admin/AdminDashboard";
 import RecruiterDashboard from "../Pages/Recruiter/RecruiterDashboard";
 import AdminLayout from "../Layout/AdminLayout/AdminLayout";
 import ActiveRecruiter from "../Pages/Admin/Recruiter Status/Active/ActiveRecruiter.jsx";
-import DeactiveRecruiter from "../Pages/Admin/Deactive Recruiter/DeactiveRecruiter.jsx";
-import BlockedRecruiter from "../Pages/Admin/Blocked Recruiter/BlockedRecruiter.jsx";
+import DeactiveRecruiter from "../Pages/Admin/Recruiter Status/Deactive/DeactiveRecruiter.jsx"
+import BlockedRecruiter from "../Pages/Admin/Recruiter Status/Blocked/BlockedRecruiter.jsx";
 import JobPostByAdmin from "../Pages/Admin/Job Post/JobPostByAdmin.jsx";
 import AddJob from "../Pages/Admin/Job Post/Form/AddJob.jsx";
 import CreateRecruiter from "../Pages/Admin/Recruiter/CreateRecruiter";

@@ -1,12 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from 'axios';
+import { instance as axios } from '../../utils/axios';
 
-const BASE_URL = 'http://localhost:3300/api/v1/recruiter'
 
 export const createRecruiter = createAsyncThunk(
     'recruiter/create', (async(data, thunkApi) =>{
         try{
-            const res = await axios.post(`${BASE_URL}/create`, data)
+            const res = await axios.post(`/recruiter/create`, data)
             return res.data.data
         }
         catch(error){
@@ -18,7 +17,7 @@ export const createRecruiter = createAsyncThunk(
 export const getAllRecruiter = createAsyncThunk(
     'recruiter/allrecruiter', (async(_, thunkApi) =>{
         try{
-            const res = await axios.get(`${BASE_URL}/allrecruiter`);
+            const res = await axios.get(`/recruiter/allrecruiter`);
             return res.data;
         }
         catch(error){
@@ -30,7 +29,7 @@ export const getAllRecruiter = createAsyncThunk(
 export const getRecruiterById = createAsyncThunk(
     'recruiter/viewrecruiter', (async(recruiterId, thunkApi) =>{
         try{
-            const res = await axios.get(`${BASE_URL}/view/${recruiterId}`)
+            const res = await axios.get(`/recruiter/view/${recruiterId}`)
             return res.data;
         }
         catch(error){
@@ -42,7 +41,7 @@ export const getRecruiterById = createAsyncThunk(
 export const updateRecruiter = createAsyncThunk(
     'recruiter/update', (async ({recruiterId, data},thunkApi) =>{
         try{
-            const res = await axios.put(`${BASE_URL}/update/${recruiterId}`, data)
+            const res = await axios.put(`/recruiter/update/${recruiterId}`, data)
             return res.data.message;
         }
         catch(error){
@@ -54,7 +53,7 @@ export const updateRecruiter = createAsyncThunk(
 export const updateStatus = createAsyncThunk(
     'recruiter/updatestatus', (async ({recruiterId, data}, thunkApi) => {
         try{
-            const res = await axios.put(`${BASE_URL}/updatestatus/${recruiterId}`, data)
+            const res = await axios.put(`/recruiter/updatestatus/${recruiterId}`, data)
             return res.data.data;
         }
         catch(error){
@@ -66,7 +65,7 @@ export const updateStatus = createAsyncThunk(
 export const getAllRecruiterCount = createAsyncThunk(
     'recruiter/allcount', (async(_, thunkApi) => {
         try{
-            const res = await axios.get(`${BASE_URL}/allcount`)
+            const res = await axios.get(`/recruiter/allcount`)
             return res.data.Count;
         }
         catch(error){
@@ -78,7 +77,7 @@ export const getAllRecruiterCount = createAsyncThunk(
 export const getActiveRecruiterCount = createAsyncThunk(
     'recruiter/activecount', (async(_, thunkApi) =>{
         try{
-            const res = await axios.get(`${BASE_URL}/activecount`)
+            const res = await axios.get(`/recruiter/activecount`)
             return res.data.Count;
         }
         catch(error){
@@ -90,7 +89,7 @@ export const getActiveRecruiterCount = createAsyncThunk(
 export const getDectiveRecruiterCount = createAsyncThunk(
     'recruiter/deactivecount', (async(_, thunkApi) =>{
         try{
-            const res = await axios.get(`${BASE_URL}/deactivecount`)
+            const res = await axios.get(`/recruiter/deactivecount`)
             return res.data.Count;
         }
         catch(error){
@@ -102,7 +101,7 @@ export const getDectiveRecruiterCount = createAsyncThunk(
 export const getBlockedRecruiterCount = createAsyncThunk(
     'recruiter/blockedcount', (async(_, thunkApi) =>{
         try{
-            const res = await axios.get(`${BASE_URL}/blockedcount`)
+            const res = await axios.get(`/recruiter/blockedcount`)
             return res.data.Count;
         }
         catch(error){

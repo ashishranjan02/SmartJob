@@ -1,12 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const BASE_URL = 'http://localhost:3300/api/v1/job'
+import { instance as axios } from '../../utils/axios';
 
 export const createPost = createAsyncThunk(
     'job/createPost', (async(data, thunkApi) =>{
         try{
-            const res = await axios.post(`${BASE_URL}/create`, data)
+            const res = await axios.post(`/job/create`, data)
             return res.data.data
         }
         catch(error){
@@ -18,7 +16,7 @@ export const createPost = createAsyncThunk(
 export const getAllPost = createAsyncThunk(
   'job/getAllPost', async (_, thunkApi) => {
     try {
-      const res = await axios.get(`${BASE_URL}/getAll`);
+      const res = await axios.get(`/job/getAll`);
       return res.data.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error.response?.data?.message);
@@ -29,7 +27,7 @@ export const getAllPost = createAsyncThunk(
 export const updatePost = createAsyncThunk(
     'job/updatePost', (async({id, data}, thunkApi) =>{
         try{
-            const res = await axios.put(`${BASE_URL}/update/${id}`, data)
+            const res = await axios.put(`/job/update/${id}`, data)
             return res.data.message
         }
         catch(error){
@@ -41,7 +39,7 @@ export const updatePost = createAsyncThunk(
 export const deletePost = createAsyncThunk(
     'job/deletePost', (async (id, thunkApi) =>{
         try{
-            const res = await axios.delete(`${BASE_URL}/delete/${id}`)
+            const res = await axios.delete(`/job/delete/${id}`)
             return id;
         }
         catch(error){

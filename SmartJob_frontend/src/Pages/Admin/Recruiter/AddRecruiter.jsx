@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { createRecruiter } from "../../../features/Admin/recruiter/recruiterSlice.js";
+import { createRecruiter } from "../../../features/recruiter/recruiterSlice.js";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First Name is required"),

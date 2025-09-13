@@ -8,7 +8,7 @@ import {
 import { Edit, Visibility, MoreVert} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRecruiter, updateStatus } from "../../../features/Admin/recruiter/recruiterSlice.js";
+import { getAllRecruiter, updateStatus } from "../../../features/recruiter/recruiterSlice.js";
 
 const ManageRecruiter = () => {
   const navigate = useNavigate();
