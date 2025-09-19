@@ -35,7 +35,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/api/v1/login', router);
+app.use('/api/v1/auth', router);
 app.use('/api/v1/job', jobrouter);
 app.use('/api/v1/recruiter', recruiterRouter)
 

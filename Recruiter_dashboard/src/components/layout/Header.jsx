@@ -25,7 +25,6 @@ import {
   Logout,
 } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../slice/RegisterSlice';
 
 const Header = ({ handleDrawerToggle, isMobile }) => {
   const navigate = useNavigate();
@@ -43,10 +42,12 @@ const Header = ({ handleDrawerToggle, isMobile }) => {
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
-    dispatch(logout());             // Redux logout
-    navigate('/login');             // redirect
-    handleMenuClose();
-  };
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("userRole");
+  handleMenuClose();
+  window.location.href = "http://localhost:5174/login";
+};
+
 
   const handleProfileClick = () => {
     navigate('/profile');

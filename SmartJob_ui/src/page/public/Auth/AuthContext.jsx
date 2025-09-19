@@ -1,36 +1,36 @@
-import React, { createContext, useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../../features/authSlice.js";
+// import React, { createContext, useContext } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { logout } from "../../../features/authSlice.js";
 
-// Create context
-const AuthContext = createContext();
+// // Create context
+// const AuthContext = createContext();
 
-// Provider
-export const AuthProvider = ({ children }) => {
-  const dispatch = useDispatch();
-  const { user, token, userRole, loading, error } = useSelector(
-    (state) => state.users
-  );
+// // Provider
+// export const AuthProvider = ({ children }) => {
+//   const dispatch = useDispatch();
+//   const { user, token, userRole, loading, error } = useSelector(
+//     (state) => state.auth
+//   );
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
+//   const handleLogout = () => {
+//     dispatch(logout());
+//   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        role: userRole,
-        loading,
-        error,
-        logout: handleLogout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         user,
+//         token,
+//         role: userRole,
+//         loading,
+//         error,
+//         logout: handleLogout,
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
 
-// Hook
-export const useAuth = () => useContext(AuthContext);
+// // Hook
+// export const useAuth = () => useContext(AuthContext);

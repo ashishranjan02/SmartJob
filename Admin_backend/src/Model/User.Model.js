@@ -1,26 +1,35 @@
 import mongoose from "mongoose"
 
 const userSchema = mongoose.Schema({
-    first_Name:{type:String, required:true},
-    last_Name:{type:String},
+    firstName:{type:String, required:true},
+    lastName:{type:String},
     email:{type:String, required:true, unique:true},
-    phone_No:{
+    phoneNo:{
         type:Number, 
         required:true, 
         unique:true,
         match:[/^[6-9][0-9]{9}$/,] 
     },
-    current_Location:{type:String, required:true},
+    currentLocation:{type:String, required:true},
     role:{
         type:String,
-        enum:["recruiter", "admin"],
+        enum:["Recruiter", "Admin"],
         required:true,
     },
     password:{
         type:String, 
         required:true, 
-        unique:true,
+    },
+    adminId:{type:String, unique:true},
+});
+
+userSchema.pre("save", async function (next) {
+    if (!this.adminId) {
+        const prefix = "ADM"; 
+        const randomDigit = Math.floor(1000 + Math.random() * 9000);    
+        this.adminId = `${prefix}${randomDigit}`;  
     }
+    next();
 });
 
 const user = mongoose.model('user', userSchema);

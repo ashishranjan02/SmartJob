@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import {
   Box,
   Typography,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Edit, Save, Cancel, Person, Upload } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { updateRecruiterProfile } from "../../slice/RegisterSlice";
+import { updateRecruiterProfile,fetchUserProfile } from "../../slice/RegisterSlice";
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,17 @@ const ProfilePage = () => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(user || {});
   const [preview, setPreview] = useState(user?.photo || "");
+useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
+  // Update local state when user is loaded
+  useEffect(() => {
+    if (user) {
+      setFormData(user);
+      setPreview(user.photo || "");
+    }
+  }, [user]);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

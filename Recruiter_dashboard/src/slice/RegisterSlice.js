@@ -94,6 +94,22 @@ export const restoreSession = () => (dispatch) => {
     }
   }
 };
+export const fetchUserProfile = createAsyncThunk(
+  "users/fetchUserProfile",
+  async (_, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`/user/recruiter/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch profile");
+    }
+  }
+);
 // --- Initial State ---
 const initialState = {
   loading: false,
@@ -158,6 +174,22 @@ const registerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+        .addCase(fetchUserProfile.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+      state.error = null;
+
+      // Update localStorage with fresh user data
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    })
+    .addCase(fetchUserProfile.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
       // Update recruiter profile
       .addCase(updateRecruiterProfile.pending, (state) => {
         state.loading = true;

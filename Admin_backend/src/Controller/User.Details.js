@@ -4,24 +4,24 @@ import bcrypt from 'bcrypt';
 
 export const register = async(req, res) =>{
     try{
-        const{name, email, phone_No, current_Location, role, password, confirm_Password} = req.body;
+        const{firstName, lastName, email, phoneNo, currentLocation, role, password, confirmPassword} = req.body;
         
-        if(!name || !email || !phone_No || !current_Location || !role || !password || !confirm_Password){
+        if(!firstName || !lastName || !email || !phoneNo || !currentLocation || !role || !password || !confirmPassword){
             return res.status(400).json({message: "All fields are required"});
         }
 
-        if(password !== confirm_Password){
+        if(password !== confirmPassword){
             return res.status(400).json({message: "Password don't Match"})
         }
 
-        const existing_User = await user.findOne({ $or: [{ email }, { phone_No }] })
+        const existing_User = await user.findOne({ $or: [{ email }, { phoneNo }] })
             if(existing_User){
                 return res.status(100).json({message: "User already exist"})
             }
 
-        const hashed_Password = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new user({
-            name, email, phone_No, role, current_Location, password:hashed_Password
+            firstName, lastName, email, phoneNo, role, currentLocation, password:hashedPassword
         })
         await newUser.save();
 
@@ -54,7 +54,7 @@ export const login = async(req, res) =>{
         }
 
         const token = jwt.sign(
-            {id: users._id, email: users.email, role: users.role},
+            {userId: users._id, adminId: user.adminId, email: users.email, role: users.role},
             process.env.JWT_SECRET,
             {expiresIn: '1h'},
         )
@@ -65,8 +65,8 @@ export const login = async(req, res) =>{
             users:{
                 name: users.name,
                 email: users.email,
-                phone_No: users.phone_No,
-                current_Location: users.current_Location,
+                phoneNo: users.phoneNo,
+                currentLocation: users.currentLocation,
                 role: users.role
             }
         })
@@ -111,7 +111,7 @@ export const deleteUser = async(req, res) =>{
 
 export const updateUser = async(req, res) => {
     try{
-        const updateUser = await user.findByIdAndUpdate(req.params.id, req.body, 
+        const updatedUser = await user.findByIdAndUpdate(req.params.id, req.body, 
            { new: true, runValidators:true}
         );
 

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
   Box, Button, Card, CardContent, TextField, Typography, Alert,
@@ -7,13 +5,11 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, updateRecruiterProfile } from "../../../features/authSlice.js"; 
-// Make sure fetchUserProfile is imported
-
+import { login } from "../../../features/authSlice.js";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.users);
+  const { loading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({ email: "", password: "", role: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -25,21 +21,26 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 🔑 Login API call
-      const loginResponse = await dispatch(loginUser(formData)).unwrap();
+      const loginResponse = await dispatch(login(formData)).unwrap();
       const token = loginResponse.token;
-      const role = loginResponse.user.role;
+      const role = (loginResponse.user || loginResponse.users)?.role?.toLowerCase(); // 🔑 normalize
 
-      // ✅ Save token & role
+      // Save to localStorage
       localStorage.setItem("authToken", token);
       localStorage.setItem("userRole", role);
 
-      console.log("✅ Role received:", role);
+      console.log("Role received:", role);
 
-      // 🌐 Redirect
-      window.location.href = `http://localhost:3000/?token=${token}&role=${role}`;
+      // Redirect based on role
+      if (role === "admin") {
+        window.location.href = `http://localhost:5173/?token=${token}&role=${role}`;
+      } 
+      
+      else if (role === "recruiter") {
+        window.location.href = `http://localhost:3000/?token=${token}&role=${role}`;
+      }
     } catch (err) {
-      console.error("❌ Login failed", err);
+      console.error("Login failed", err);
     }
   };
 
@@ -96,4 +97,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

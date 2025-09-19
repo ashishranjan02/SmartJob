@@ -1,201 +1,67 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { UI_BASE_URL } from "../utils/axios";
 
-const BASE_URL = "http://localhost:4000/api/user";
-
-// Utility to safely parse JSON from localStorage
-const safeJSONParse = (key) => {
-  try {
-    const value = localStorage.getItem(key);
-    return value && value !== "undefined" ? JSON.parse(value) : null;
-  } catch (err) {
-    console.error(`Invalid JSON in localStorage for key: ${key}`, err);
-    return null;
-  }
-};
-
-// Global logout timer
-let logoutTimer;
-
-// Auto logout based on token expiry
-const setAutoLogout = (dispatch, token) => {
-  try {
-    const decoded = jwtDecode(token);
-    if (decoded.exp) {
-      const expiryTime = decoded.exp * 1000; // convert to ms
-      const remainingTime = expiryTime - Date.now();
-
-      if (logoutTimer) clearTimeout(logoutTimer);
-
-      if (remainingTime > 0) {
-        logoutTimer = setTimeout(() => {
-          dispatch(registerSlice.actions.logout());
-        }, remainingTime);
-      } else {
-        // Token already expired
-        dispatch(registerSlice.actions.logout());
-      }
-    }
-  } catch (err) {
-    console.error("Invalid token", err);
-  }
-};
-
-// --- Thunks ---
-export const registerUser = createAsyncThunk(
-  "users/registerUser",
-  async (formData, thunkAPI) => {
+// 🔑 Async thunk for login
+export const login = createAsyncThunk(
+  "auth/login",
+  async (credentials, thunkApi) => {
     try {
-      const response = await axios.post(`${BASE_URL}/register`, formData);
-      return response.data.data;
+      const res = await axios.post(`${UI_BASE_URL}/login`, credentials);
+      console.log("Login API response:", res.data);
+      return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Something went wrong"
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Login failed"
       );
     }
   }
 );
 
-export const loginUser = createAsyncThunk(
-  "users/loginUser",
-  async (formData, thunkAPI) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/login`, formData);
-
-      // ✅ Save values to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("authToken", response.data.token); // optional alias
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("role", response.data.user.role);
-
-      // Start auto logout timer
-      setAutoLogout(thunkAPI.dispatch, response.data.token);
-
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Invalid email or password"
-      );
-    }
-  }
-);
-
-export const updateRecruiterProfile = createAsyncThunk(
-  "users/updateRecruiterProfile",
-  async (formData, thunkAPI) => {
-    try {
-      const response = await axios.put(`${BASE_URL}/recruiter/profile`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
-
-// Restore session on page reload
-export const restoreSession = () => (dispatch) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    const decoded = jwtDecode(token);
-    if (decoded.exp * 1000 > Date.now()) {
-      setAutoLogout(dispatch, token);
-    } else {
-      dispatch(registerSlice.actions.logout());
-    }
-  }
-};
-
-// --- Initial State ---
 const initialState = {
+  users: null,
+  token: null,
   loading: false,
   error: null,
-  success: false,
-  user: safeJSONParse("user"),
-  token: localStorage.getItem("token") || null,
-  authToken: localStorage.getItem("authToken") || null,
-  userRole: localStorage.getItem("role") || null,
+  isAutenticated: false,
+  role: null,
 };
 
-// --- Slice ---
-const registerSlice = createSlice({
-  name: "users",
+const authSlice = createSlice({
+  name: "auth",
   initialState,
   reducers: {
-    resetSuccess: (state) => {
-      state.success = false;
-    },
     logout: (state) => {
-      state.user = null;
+      state.users = null;
       state.token = null;
-      state.authToken = null;
-      state.userRole = null;
-
-      localStorage.removeItem("token");
+      state.loading = false;
+      state.error = null;
+      state.isAutenticated = false;
+      state.role = null;
       localStorage.removeItem("authToken");
-      localStorage.removeItem("role");
-      localStorage.removeItem("user");
-
-      if (logoutTimer) clearTimeout(logoutTimer);
+      localStorage.removeItem("userRole");
     },
   },
   extraReducers: (builder) => {
     builder
-      // Register
-      .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(registerUser.fulfilled, (state) => {
-        state.loading = false;
-        state.success = true;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Login
-      .addCase(loginUser.pending, (state) => {
+      .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = null;
+        const user = action.payload.user || action.payload.users;
         state.token = action.payload.token;
-        state.authToken = action.payload.token; // ✅ alias
-        state.user = action.payload.user;
-        state.userRole = action.payload.user.role;
-
-        localStorage.setItem("token", action.payload.token);
-        localStorage.setItem("authToken", action.payload.token);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
-        localStorage.setItem("role", action.payload.user.role);
+        state.users = user;
+        state.role = user?.role?.toLowerCase() || null;
+        state.isAutenticated = true;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
-      })
-      // Update recruiter profile
-      .addCase(updateRecruiterProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateRecruiterProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.user = action.payload;
-        localStorage.setItem("user", JSON.stringify(action.payload));
-      })
-      .addCase(updateRecruiterProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Login failed";
       });
   },
 });
 
-export const { resetSuccess, logout } = registerSlice.actions;
-export default registerSlice.reducer;
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;
